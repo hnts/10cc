@@ -5,18 +5,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern char *user_input;
-
+// parse.c
 typedef enum {
-  ND_ADD,
-  ND_SUB,
-  ND_MUL,
-  ND_DIV,
-  ND_NUM,
+  ND_ADD, // +
+  ND_SUB, // -
+  ND_MUL, // *
+  ND_DIV, // /
+  ND_NUM, // integer
   ND_EQ,
   ND_NE,
   ND_LT,
   ND_LE,
+  ND_ASSIGN, // =
+  ND_LVAR, // local variable
 } NodeKind;
 
 typedef struct Node Node;
@@ -26,12 +27,12 @@ struct Node {
   Node *lhs;
   Node *rhs;
   int val;
+  int offset;
 };
-
-void gen(Node *node);
 
 typedef enum {
   TK_RESERVED, // 記号
+  TK_IDENT,    // 識別子
   TK_NUM,      // 整数トークン
   TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
@@ -46,6 +47,18 @@ struct Token {
   int len;        // トークンの長さ
 };
 
-extern Token *token;
 Token *tokenize(char *p);
 Node *expr();
+void program();
+extern Node *code[100];
+
+// main.c
+extern char *user_input;
+extern Token *token;
+
+// codegen.c
+void gen(Node *node);
+
+// util.c
+void error(char *fmt, ...);
+void error_at(char *loc, char *fmt, ...);

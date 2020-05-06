@@ -1,16 +1,7 @@
 #include "10cc.h"
 
-void error_at(char *loc, char *fmt, ...)  {
-  va_list ap;
-  va_start(ap, fmt);
-
-  int pos = loc - user_input;
-  fprintf(stderr, "%s\n", user_input);
-  fprintf(stderr, "%*s", pos, "");
-  fprintf(stderr, "^ ");
-  vfprintf(stderr, fmt, ap);
-  fprintf(stderr, "\n");
-  exit(1);
+bool at_eof() {
+  return token->kind == TK_EOF;
 }
 
 Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
@@ -66,7 +57,10 @@ Node *new_node_num(int val) {
   return node;
 }
 
+void program();
+Node *stmt();
 Node *expr();
+Node *assign();
 Node *equality();
 Node *relational();
 Node *add();
@@ -74,8 +68,30 @@ Node *mul();
 Node *unary();
 Node *primary();
 
+Node *code[100];
+
+void program() {
+  int i = 0;
+  while (!at_eof())
+    code[i++] = stmt();
+  code[i] = NULL;
+}
+
+Node *stmt() {
+  Node *node = expr();
+  expect(";");
+  return node;
+}
+
 Node *expr() {
-  return equality();
+  return assign();
+}
+
+Node *assign() {
+  Node *node = equality();
+  if (consume("="))
+    node = new_node(ND_ASSIGN, node, assign());
+  return node;
 }
 
 Node *equality() {
@@ -142,10 +158,26 @@ Node *unary() {
   return primary();
 }
 
+Token *consume_ident() {
+  if (token->kind != TK_IDENT)
+    return NULL;
+  Token *tok = token;
+  token = token->next;
+  return tok;
+}
+
 Node *primary() {
   if (consume("(")) {
     Node *node = expr();
     expect(")");
+    return node;
+  }
+
+  Token *tok = consume_ident();
+  if (tok) {
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_LVAR;
+    node->offset = (tok->str[0] - 'a' + 1) * 8;
     return node;
   }
 
@@ -163,6 +195,11 @@ Token *tokenize(char *p) {
       continue;
     }
 
+    if ('a' <= *p && *p <= 'z') {
+        cur = new_token(TK_IDENT, cur, p++, 1);
+        continue;
+    }
+
     if (startswith(p, "==") || startswith(p, "!=") ||
         startswith(p, "<=") || startswith(p, ">=")) {
       cur = new_token(TK_RESERVED, cur, p, 2);
@@ -173,7 +210,8 @@ Token *tokenize(char *p) {
     if (strncmp(p, "+", 1) == 0 || strncmp(p, "-", 1) == 0 ||
         strncmp(p, "*", 1) == 0 || strncmp(p, "/", 1) == 0 ||
         strncmp(p, "(", 1) == 0 || strncmp(p, ")", 1) == 0 ||
-        strncmp(p, "<", 1) == 0 || strncmp(p, ">", 1) == 0) {
+        strncmp(p, "<", 1) == 0 || strncmp(p, ">", 1) == 0 ||
+        strncmp(p, "=", 1) == 0 || strncmp(p, ";", 1) == 0) {
       cur = new_token(TK_RESERVED, cur, p++, 1);
       continue;
     }
