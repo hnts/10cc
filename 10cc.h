@@ -30,6 +30,11 @@ struct Node {
   int offset;
 };
 
+Node *expr();
+void program();
+extern Node *code[100];
+
+// token.c
 typedef enum {
   TK_RESERVED, // 記号
   TK_IDENT,    // 識別子
@@ -48,9 +53,6 @@ struct Token {
 };
 
 Token *tokenize(char *p);
-Node *expr();
-void program();
-extern Node *code[100];
 
 // main.c
 extern char *user_input;
