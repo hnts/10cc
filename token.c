@@ -36,11 +36,7 @@ Token *tokenize(char *p) {
       continue;
     }
 
-    if (strncmp(p, "+", 1) == 0 || strncmp(p, "-", 1) == 0 ||
-        strncmp(p, "*", 1) == 0 || strncmp(p, "/", 1) == 0 ||
-        strncmp(p, "(", 1) == 0 || strncmp(p, ")", 1) == 0 ||
-        strncmp(p, "<", 1) == 0 || strncmp(p, ">", 1) == 0 ||
-        strncmp(p, "=", 1) == 0 || strncmp(p, ";", 1) == 0) {
+    if (strchr("+-*/;=()<>", *p)) {
       cur = new_token(TK_RESERVED, cur, p++, 1);
       continue;
     }
