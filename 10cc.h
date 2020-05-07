@@ -40,12 +40,12 @@ typedef enum {
   TK_IDENT,    // 識別子
   TK_NUM,      // 整数トークン
   TK_EOF,      // 入力の終わりを表すトークン
-} TokenKind;
+} TokenType;
 
 typedef struct Token Token;
 
 struct Token {
-  TokenKind kind; // トークンの型
+  int type; // トークンの型
   Token *next;    // 次の入力トークン
   int val;        // kindがTK_NUMの場合、その数値
   char *str;      // トークン文字列

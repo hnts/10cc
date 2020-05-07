@@ -4,9 +4,9 @@ bool startswith(char *p, char *q) {
   return memcmp(p, q, strlen(q)) == 0;
 }
 
-Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
+Token *new_token(TokenType type, Token *cur, char *str, int len) {
   Token *tok = calloc(1, sizeof(Token));
-  tok->kind = kind;
+  tok->type = type;
   tok->str = str;
   tok->len = len;
   cur->next = tok;
