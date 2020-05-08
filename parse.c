@@ -1,5 +1,7 @@
 #include "10cc.h"
 
+static Token *token;
+
 bool at_eof() {
   return token->type == TK_EOF;
 }
@@ -57,7 +59,8 @@ Node *primary();
 
 Node *code[100];
 
-void program() {
+void program(Token *token_) {
+  token = token_;
   int i = 0;
   while (!at_eof())
     code[i++] = stmt();

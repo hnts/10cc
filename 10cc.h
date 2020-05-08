@@ -56,7 +56,6 @@ Token *tokenize(char *p);
 
 // main.c
 extern char *user_input;
-extern Token *token;
 
 // codegen.c
 void gen(Node *node);
