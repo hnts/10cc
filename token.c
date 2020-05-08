@@ -1,5 +1,20 @@
 #include "10cc.h"
 
+static char *user_input;
+
+void error_at(char *loc, char *fmt, ...)  {
+  va_list ap;
+  va_start(ap, fmt);
+
+  int pos = loc - user_input;
+  fprintf(stderr, "%s\n", user_input);
+  fprintf(stderr, "%*s", pos, "");
+  fprintf(stderr, "^ ");
+  vfprintf(stderr, fmt, ap);
+  fprintf(stderr, "\n");
+  exit(1);
+}
+
 bool startswith(char *p, char *q) {
   return memcmp(p, q, strlen(q)) == 0;
 }
@@ -14,6 +29,7 @@ Token *new_token(TokenType type, Token *cur, char *str, int len) {
 }
 
 Token *tokenize(char *p) {
+  user_input = p;
   Token head;
   head.next = NULL;
   Token *cur = &head;

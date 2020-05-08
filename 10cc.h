@@ -54,9 +54,6 @@ struct Token {
 
 Token *tokenize(char *p);
 
-// main.c
-extern char *user_input;
-
 // codegen.c
 void gen(Node *node);
 
