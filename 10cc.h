@@ -53,10 +53,10 @@ struct Token {
 };
 
 Token *tokenize(char *p);
+void error_at(char *loc, char *fmt, ...);
 
 // codegen.c
 void gen(Node *node);
 
 // util.c
 void error(char *fmt, ...);
-void error_at(char *loc, char *fmt, ...);
