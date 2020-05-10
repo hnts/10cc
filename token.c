@@ -2,6 +2,14 @@
 
 static char *user_input;
 
+bool is_alpha(char c) {
+  return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
+}
+
+bool is_num(char c) {
+  return '0' <= c && c <= '9';
+}
+
 void error_at(char *loc, char *fmt, ...)  {
   va_list ap;
   va_start(ap, fmt);
@@ -21,13 +29,17 @@ bool startswith(char *p, char *q) {
 
 int len_of_lvar(char *p) {
   int len = 0;
-  while(*p) {
-    if ('a' <= *p && *p <= 'z') {
-      len += 1;
-      p++;
-      continue;
+  if (is_alpha(*p)) {
+    len += 1;
+    p++;
+    while(*p) {
+      if (is_alpha(*p) || is_num(*p)) {
+        len += 1;
+        p++;
+        continue;
+      }
+      break;
     }
-    break;
   }
   return len;
 }
