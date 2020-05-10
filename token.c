@@ -19,6 +19,19 @@ bool startswith(char *p, char *q) {
   return memcmp(p, q, strlen(q)) == 0;
 }
 
+int len_of_lvar(char *p) {
+  int len = 0;
+  while(*p) {
+    if ('a' <= *p && *p <= 'z') {
+      len += 1;
+      p++;
+      continue;
+    }
+    break;
+  }
+  return len;
+}
+
 Token *new_token(TokenType type, Token *cur, char *str, int len) {
   Token *tok = calloc(1, sizeof(Token));
   tok->type = type;
@@ -40,8 +53,11 @@ Token *tokenize(char *p) {
       continue;
     }
 
-    if ('a' <= *p && *p <= 'z') {
-        cur = new_token(TK_IDENT, cur, p++, 1);
+    int lvar_len = len_of_lvar(p);
+
+    if (lvar_len > 0) {
+        cur = new_token(TK_IDENT, cur, p, lvar_len);
+        p += lvar_len;
         continue;
     }
 
