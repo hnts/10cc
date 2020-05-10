@@ -3,11 +3,11 @@
 static Token *token;
 
 bool at_eof() {
-  return token->type == TK_EOF;
+  return token->kind == TK_EOF;
 }
 
 bool consume(char *op) {
-  if (token->type != TK_RESERVED ||
+  if (token->kind != TK_RESERVED ||
       strlen(op) != token->len ||
       memcmp(token->str, op, token->len))
     return false;
@@ -16,7 +16,7 @@ bool consume(char *op) {
 }
 
 void expect(char *op) {
-  if (token->type != TK_RESERVED ||
+  if (token->kind != TK_RESERVED ||
       strlen(op) != token->len ||
       memcmp(token->str, op, token->len))
     error_at(token->str, "expected '%s'", op);
@@ -24,7 +24,7 @@ void expect(char *op) {
 }
 
 int expect_number() {
-  if (token->type != TK_NUM)
+  if (token->kind != TK_NUM)
     error_at(token->str, "expected a number");
   int val = token->val;
   token = token->next;
@@ -149,7 +149,7 @@ Node *unary() {
 }
 
 Token *consume_ident() {
-  if (token->type != TK_IDENT)
+  if (token->kind != TK_IDENT)
     return NULL;
   Token *tok = token;
   token = token->next;

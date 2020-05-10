@@ -32,9 +32,9 @@ int len_of_lvar(char *p) {
   return len;
 }
 
-Token *new_token(TokenType type, Token *cur, char *str, int len) {
+Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
   Token *tok = calloc(1, sizeof(Token));
-  tok->type = type;
+  tok->kind = kind;
   tok->str = str;
   tok->len = len;
   cur->next = tok;
