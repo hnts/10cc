@@ -15,6 +15,23 @@ bool consume(char *op) {
   return true;
 }
 
+bool consume_ret(char *op) {
+  if (token->kind != TK_RETURN ||
+      strlen(op) != token->len ||
+      memcmp(token->str, op, token->len))
+    return false;
+  token = token->next;
+  return true;
+}
+
+Token *consume_ident() {
+  if (token->kind != TK_IDENT)
+    return NULL;
+  Token *tok = token;
+  token = token->next;
+  return tok;
+}
+
 void expect(char *op) {
   if (token->kind != TK_RESERVED ||
       strlen(op) != token->len ||
@@ -84,7 +101,16 @@ void program(Token *token_) {
 }
 
 Node *stmt() {
-  Node *node = expr();
+  Node *node;
+
+  if(consume_ret(token->str)) {
+    node = calloc(1, sizeof(Node));
+    node->kind = ND_RETURN;
+    node->lhs = expr();
+  } else {
+    node = expr();
+  }
+
   expect(";");
   return node;
 }
@@ -162,14 +188,6 @@ Node *unary() {
   if (consume("-"))
     return new_node(ND_SUB, new_node_num(0), primary());
   return primary();
-}
-
-Token *consume_ident() {
-  if (token->kind != TK_IDENT)
-    return NULL;
-  Token *tok = token;
-  token = token->next;
-  return tok;
 }
 
 Node *primary() {

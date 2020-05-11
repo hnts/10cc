@@ -8,6 +8,16 @@ void gen_lval(Node *node) {
   printf("    push rax\n");
 }
 
+void gen_return(Node *node) {
+  if (node->kind == ND_RETURN) {
+    gen(node->lhs);
+    printf("    pop rax\n");
+    printf("    mov rsp, rbp\n");
+    printf("    pop rbp\n");
+    printf("    ret\n");
+  }
+}
+
 void gen(Node *node) {
   switch (node->kind) {
   case ND_NUM:
@@ -27,6 +37,9 @@ void gen(Node *node) {
     printf("    pop rax\n");
     printf("    mov [rax], rdi\n");
     printf("    push rdi\n");
+    return;
+  case ND_RETURN:
+    gen_return(node);
     return;
   }
 
