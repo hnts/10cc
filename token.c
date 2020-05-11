@@ -2,12 +2,11 @@
 
 static char *user_input;
 
-bool is_alpha(char c) {
-  return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
-}
-
-bool is_num(char c) {
-  return '0' <= c && c <= '9';
+bool is_alnum(char c) {
+  return ('a' <= c && c <= 'z') ||
+         ('A' <= c && c <= 'Z') ||
+         ('0' <= c && c <= '9') ||
+         (c == '_');
 }
 
 void error_at(char *loc, char *fmt, ...)  {
@@ -33,7 +32,7 @@ int len_of_lvar(char *p) {
     len += 1;
     p++;
     while(*p) {
-      if (is_alpha(*p) || is_num(*p)) {
+      if (is_alnum(*p)) {
         len += 1;
         p++;
         continue;
