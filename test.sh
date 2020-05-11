@@ -47,7 +47,10 @@ assert 0 '1>=2;'
 
 assert 3 'a = 3;'
 assert 22 'b = 5 * 6 - 8;'
+assert 2 'a=1;b=3;a=2;'
 assert 14 'a = 3; b = 5 * 6 - 8; a + b / 2;'
 assert 1 'a = 3; b = 1; a = b;'
+assert 3 'foo=3;'
+assert 8 'foo123=3; bar=5; foo123+bar;'
 
 echo OK

@@ -31,6 +31,22 @@ int expect_number() {
   return val;
 }
 
+LVar *find_lvar(Token *tok) {
+  for (LVar *var = locals; var; var = var->next)
+    if (var->len == tok->len && !strncmp(tok->str, var->name, var->len))
+      return var;
+  return NULL;
+}
+
+LVar *new_lvar(char *name) {
+  LVar *var = calloc(1, sizeof(LVar));
+  var->next = locals;
+  var->name = name;
+  var->len = strlen(name);
+  locals = var;
+  return var;
+}
+
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs) {
   Node *node = calloc(1, sizeof(Node));
   node->kind = kind;
@@ -167,7 +183,12 @@ Node *primary() {
   if (tok) {
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_LVAR;
-    node->offset = (tok->str[0] - 'a' + 1) * 8;
+
+    LVar *lvar = find_lvar(tok);
+    if (!lvar)
+      lvar = new_lvar(strndup(tok->str, tok->len));
+
+    node->var = lvar;
     return node;
   }
 

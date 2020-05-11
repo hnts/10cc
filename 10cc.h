@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -6,6 +7,16 @@
 #include <string.h>
 
 // parse.c
+typedef struct LVar LVar;
+struct LVar {
+  LVar *next;
+  char *name;
+  int len;
+  int offset;
+};
+
+extern LVar *locals;
+
 typedef enum {
   ND_ADD, // +
   ND_SUB, // -
@@ -27,7 +38,7 @@ struct Node {
   Node *lhs;
   Node *rhs;
   int val;
-  int offset;
+  LVar *var;
 };
 
 Node *expr();
